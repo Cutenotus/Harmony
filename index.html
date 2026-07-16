@@ -17,6 +17,9 @@
         }
         .content {
             text-align: center;
+            width: 100%;
+            max-width: 320px;
+            padding: 20px;
         }
         h1 {
             font-size: 24px;
@@ -28,15 +31,58 @@
             display: flex;
             gap: 24px;
             justify-content: center;
+            margin-bottom: 32px;
         }
-        a {
+        a, .upload-btn {
             color: #666666;
             text-decoration: none;
             font-size: 15px;
             transition: color 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
         }
-        a:hover {
+        a:hover, .upload-btn:hover {
             color: #000000;
+        }
+        .playlist-container {
+            border-top: 1px solid #eaeaea;
+            padding-top: 24px;
+        }
+        #audio-player {
+            width: 100%;
+            margin-bottom: 16px;
+            height: 32px;
+        }
+        .track-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .track-item {
+            font-size: 14px;
+            color: #666666;
+            padding: 8px 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+        .track-item:hover {
+            color: #000000;
+        }
+        .track-item.active {
+            color: #000000;
+            font-weight: 500;
+        }
+        #file-input {
+            display: none;
         }
     </style>
 </head>
@@ -44,11 +90,93 @@
 
 <div class="content">
     <h1>Harmony</h1>
+    
     <div class="links">
         <a href="https://vk.ru/harmonydlc" target="_blank">Вк Harmony</a>
         <a href="https://t.me/harmony_dlc" target="_blank">Тгк Harmony</a>
+        <label class="upload-btn" for="file-input">Добавить трек</label>
+        <input type="file" id="file-input" accept="audio/*" multiple>
+    </div>
+
+    <div class="playlist-container">
+        <audio id="audio-player" controls></audio>
+        <ul class="track-list" id="track-list"></ul>
     </div>
 </div>
+
+<script>
+    const fileInput = document.getElementById('file-input');
+    const trackListElement = document.getElementById('track-list');
+    const audioPlayer = document.getElementById('audio-player');
+    
+    let playlist = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedPlaylist = localStorage.getItem('harmony_playlist');
+        if (savedPlaylist) {
+            playlist = JSON.parse(savedPlaylist);
+            renderPlaylist();
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        
+        files.forEach(file => {
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const track = {
+                    name: file.name.replace(/\.[^/.]+$/, ""),
+                    data: event.target.result
+                };
+                
+                playlist.push(track);
+                savePlaylist();
+                renderPlaylist();
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    });
+
+    function renderPlaylist() {
+        trackListElement.innerHTML = '';
+        
+        playlist.forEach((track, index) => {
+            const li = document.createElement('li');
+            li.className = 'track-item';
+            li.textContent = track.name;
+            
+            li.addEventListener('click', () => playTrack(index));
+            trackListElement.appendChild(li);
+        });
+    }
+
+    function playTrack(index) {
+        document.querySelectorAll('.track-item').forEach(el => el.classList.remove('active'));
+        
+        const items = document.querySelectorAll('.track-item');
+        if(items[index]) items[index].classList.add('active');
+
+        audioPlayer.src = playlist[index].data;
+        audioPlayer.play();
+
+        audioPlayer.onended = () => {
+            if (index + 1 < playlist.length) {
+                playTrack(index + 1);
+            }
+        };
+    }
+
+    function savePlaylist() {
+        try {
+            localStorage.setItem('harmony_playlist', JSON.stringify(playlist));
+        } catch (e) {
+            alert('Плейлист переполнен. Браузер не может сохранить слишком много тяжелых аудиофайлов.');
+        }
+    }
+</script>
 
 </body>
 </html>
