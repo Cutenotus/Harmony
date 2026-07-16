@@ -3,325 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>harmony.onl</title>
+    <title>HARMONY.ONL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;800&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: url('background.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            color: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .content {
-            text-align: center;
-            width: 100%;
-            max-width: 320px;
-            padding: 24px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInCard 0.8s ease forwards;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 500;
-            letter-spacing: -0.5px;
-            margin-bottom: 24px;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 2px solid #000;
-            width: 0;
-            margin-left: auto;
-            margin-right: auto;
-            animation: 
-                typing 2s steps(11, end) forwards,
-                blink 0.75s step-end infinite alternate;
-        }
-        .links {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            margin-bottom: 32px;
-        }
-        a, .upload-btn {
-            color: #666666;
-            text-decoration: none;
-            font-size: 15px;
-            transition: color 0.3s ease, transform 0.2s ease;
-            cursor: pointer;
-            border: none;
-            background: none;
-            padding: 0;
-            font-family: inherit;
-        }
-        a:hover, .upload-btn:hover {
-            color: #000000;
-            transform: translateY(-1px);
-        }
-        .playlist-container {
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-            padding-top: 24px;
-        }
-        #audio-player {
-            width: 100%;
-            margin-bottom: 16px;
-            height: 32px;
-            border-radius: 8px;
-        }
-        .track-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 160px;
-            height: 160px;
-            overflow-y: auto;
-            text-align: left;
-            scroll-behavior: smooth;
-        }
-        /* Стилизация скроллбара */
-        .track-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .track-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .track-list::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-        }
-        .track-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .track-item {
-            font-size: 14px;
-            color: #666666;
-            padding: 10px 6px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            animation: fadeInTrack 0.4s ease forwards;
-            opacity: 0;
-        }
-        .track-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex-grow: 1;
-        }
-        .track-item:hover {
-            background-color: rgba(0, 0, 0, 0.03);
-            padding-left: 10px;
-        }
-        .track-item:hover .track-name {
-            color: #000000;
-        }
-        .track-item.active {
-            background-color: rgba(0, 0, 0, 0.05);
-            padding-left: 10px;
-        }
-        .track-item.active .track-name {
-            color: #000000;
-            font-weight: 500;
-        }
-        .delete-btn {
-            color: #ccc;
-            font-size: 12px;
-            margin-left: 8px;
-            transition: color 0.2s ease, transform 0.2s ease;
-            cursor: pointer;
-            padding: 4px;
-        }
-        .delete-btn:hover {
-            color: #ff3b30;
-            transform: scale(1.2);
-        }
-        #file-input {
-            display: none;
+        :root {
+            --accent-main: #80a3ff;
+            --vk-color: #0077FF;
+            --tg-color: #2AABEE;
+            --text-dark: #121826;
+            --text-gray: #6b7280;
+            --bg-btn: #ffffff;
         }
 
-        /* Ключевые кадры анимаций */
-        @keyframes fadeInCard {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        @keyframes fadeInTrack {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-image: url('background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; 
+            padding: 20px;
         }
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 140px }
+
+        .title {
+            font-weight: 800;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            color: var(--text-dark);
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+            cursor: default;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
-        @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: #000000; }
+
+        .title:hover {
+            color: var(--accent-main);
+            text-shadow: 0 4px 24px rgba(128, 163, 255, 0.4);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 40px;
+            user-select: none;
+        }
+
+        .links-wrapper {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background-color: var(--bg-btn);
+            border-radius: 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn svg {
+            width: 28px;
+            height: 28px;
+            transition: fill 0.3s ease;
+        }
+
+        .btn-vk svg { 
+            fill: var(--vk-color); 
+        }
+        
+        .btn-vk:hover {
+            background-color: var(--vk-color);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 119, 255, 0.3);
+        }
+
+        .btn-vk:hover svg { 
+            fill: #ffffff; 
+        }
+
+        .btn-tg svg { 
+            fill: var(--tg-color); 
+        }
+        
+        .btn-tg:hover {
+            background-color: var(--tg-color);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(42, 171, 238, 0.3);
+        }
+
+        .btn-tg:hover svg { 
+            fill: #ffffff; 
+        }
+
+        @media (max-width: 480px) {
+            .links-wrapper {
+                flex-direction: column;
+                width: 100%;
+                max-width: 280px;
+            }
+            .btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="content">
-    <h1>harmony.onl</h1>
+    <h1 class="title">HARMONY.ONL</h1>
     
-    <div class="links">
-        <a href="https://vk.ru" target="_blank">Вк Harmony</a>
-        <a href="https://t.me" target="_blank">Тгк Harmony</a>
-        <label class="upload-btn" for="file-input">Добавить трек</label>
-        <input type="file" id="file-input" accept="audio/*" multiple>
+    <div class="subtitle">наши соцсети</div>
+
+    <div class="links-wrapper">
+        
+        <a href="https://vk.com/harmonydlc" target="_blank" class="btn btn-vk">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25.217 22.402h-2.179c-0.825 0-1.080-0.656-2.562-2.158-1.291-1.25-1.862-1.418-2.179-1.418-0.445 0-0.572 0.127-0.572 0.741v1.968c0 0.53-0.169 0.847-1.566 0.847-2.818-0.189-5.24-1.726-6.646-3.966l-0.021-0.035c-1.632-2.027-2.835-4.47-3.43-7.142l-0.022-0.117c0-0.317 0.127-0.614 0.741-0.614h2.179c0.55 0 0.762 0.254 0.975 0.846 1.078 3.112 2.878 5.842 3.619 5.842 0.275 0 0.402-0.127 0.402-0.825v-3.219c-0.085-1.482-0.868-1.608-0.868-2.137 0.009-0.283 0.241-0.509 0.525-0.509 0.009 0 0.017 0 0.026 0.001l-0.001-0h3.429c0.466 0 0.635 0.254 0.635 0.804v4.34c0 0.465 0.212 0.635 0.339 0.635 0.275 0 0.509-0.17 1.016-0.677 1.054-1.287 1.955-2.759 2.642-4.346l0.046-0.12c0.145-0.363 0.493-0.615 0.9-0.615 0.019 0 0.037 0.001 0.056 0.002l-0.003-0h2.179c0.656 0 0.805 0.337 0.656 0.804-0.874 1.925-1.856 3.579-2.994 5.111l0.052-0.074c-0.232 0.381-0.317 0.55 0 0.975 0.232 0.317 0.995 0.973 1.503 1.566 0.735 0.727 1.351 1.573 1.816 2.507l0.025 0.055c0.212 0.612-0.106 0.93-0.72 0.93zM20.604 1.004h-9.207c-8.403 0-10.392 1.989-10.392 10.392v9.207c0 8.403 1.989 10.392 10.392 10.392h9.207c8.403 0 10.392-1.989 10.392-10.392v-9.207c0-8.403-2.011-10.392-10.392-10.392z"></path>
+            </svg>
+            <span>ВКонтакте</span>
+        </a>
+
+        <a href="https://t.me/harmony_dlc" target="_blank" class="btn btn-tg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="m12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12c0-6.627-5.373-12-12-12zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+            </svg>
+            <span>Telegram</span>
+        </a>
+        
     </div>
-
-    <div class="playlist-container">
-        <audio id="audio-player" controls></audio>
-        <ul class="track-list" id="track-list"></ul>
-    </div>
-</div>
-
-<script>
-    const fileInput = document.getElementById('file-input');
-    const trackListElement = document.getElementById('track-list');
-    const audioPlayer = document.getElementById('audio-player');
-    
-    let playlist = [];
-    let db;
-
-    const request = indexedDB.open("HarmonyMusicDB", 1);
-
-    request.onupgradeneeded = function(e) {
-        db = e.target.result;
-        if (!db.objectStoreNames.contains("tracks")) {
-            db.createObjectStore("tracks", { keyPath: "id", autoIncrement: true });
-        }
-    };
-
-    request.onsuccess = function(e) {
-        db = e.target.result;
-        loadPlaylistFromDB();
-    };
-
-    request.onerror = function() {
-        console.error("Ошибка открытия базы данных");
-    };
-
-    function loadPlaylistFromDB() {
-        const transaction = db.transaction(["tracks"], "readonly");
-        const store = transaction.objectStore("tracks");
-        const getAllRequest = store.getAll();
-
-        getAllRequest.onsuccess = function() {
-            playlist = getAllRequest.result;
-            renderPlaylist();
-        };
-    }
-
-    fileInput.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
-        
-        files.forEach(file => {
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                const track = {
-                    name: file.name.replace(/\.[^/.]+$/, ""),
-                    data: event.target.result
-                };
-                
-                const transaction = db.transaction(["tracks"], "readwrite");
-                const store = transaction.objectStore("tracks");
-                const addRequest = store.add(track);
-
-                addRequest.onsuccess = function(e) {
-                    track.id = e.target.result;
-                    playlist.push(track);
-                    renderPlaylist();
-                };
-            };
-            
-            reader.readAsDataURL(file);
-        });
-        fileInput.value = "";
-    });
-
-    function renderPlaylist() {
-        trackListElement.innerHTML = '';
-        
-        playlist.forEach((track, index) => {
-            const li = document.createElement('li');
-            li.className = 'track-item';
-            li.style.animationDelay = `${index * 0.05}s`;
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'track-name';
-            nameSpan.textContent = track.name;
-            nameSpan.addEventListener('click', () => playTrack(index));
-            
-            const deleteBtn = document.createElement('span');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerHTML = '✕';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteTrack(track.id, index);
-            });
-
-            li.appendChild(nameSpan);
-            li.appendChild(deleteBtn);
-            trackListElement.appendChild(li);
-        });
-    }
-
-    function playTrack(index) {
-        document.querySelectorAll('.track-item').forEach(el => el.classList.remove('active'));
-        
-        const items = document.querySelectorAll('.track-item');
-        if(items[index]) items[index].classList.add('active');
-
-        audioPlayer.src = playlist[index].data;
-        audioPlayer.play();
-
-        audioPlayer.onended = () => {
-            if (index + 1 < playlist.length) {
-                playTrack(index + 1);
-            }
-        };
-    }
-
-    function deleteTrack(id, index) {
-        const transaction = db.transaction(["tracks"], "readwrite");
-        const store = transaction.objectStore("tracks");
-        const deleteRequest = store.delete(id);
-
-        deleteRequest.onsuccess = function() {
-            const items = document.querySelectorAll('.track-item');
-            if (items[index] && items[index].classList.contains('active')) {
-                audioPlayer.pause();
-                audioPlayer.src = "";
-            }
-            
-            playlist.splice(index, 1);
-            renderPlaylist();
-        };
-    }
-</script>
 
 </body>
 </html>
