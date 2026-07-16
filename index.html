@@ -60,7 +60,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 150px;
+            max-height: 180px;
             overflow-y: auto;
             text-align: left;
         }
@@ -73,13 +73,32 @@
             overflow: hidden;
             text-overflow: ellipsis;
             transition: color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .track-item:hover {
+        .track-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+        .track-item:hover .track-name {
             color: #000000;
         }
-        .track-item.active {
+        .track-item.active .track-name {
             color: #000000;
             font-weight: 500;
+        }
+        .delete-btn {
+            color: #ccc;
+            font-size: 12px;
+            margin-left: 8px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            color: #ff3b30;
         }
         #file-input {
             display: none;
@@ -92,8 +111,8 @@
     <h1>Harmony</h1>
     
     <div class="links">
-        <a href="https://vk.ru/harmonydlc" target="_blank">Вк Harmony</a>
-        <a href="https://t.me/harmony_dlc" target="_blank">Тгк Harmony</a>
+        <a href="https://vk.ru" target="_blank">Вк Harmony</a>
+        <a href="https://t.me" target="_blank">Тгк Harmony</a>
         <label class="upload-btn" for="file-input">Добавить трек</label>
         <input type="file" id="file-input" accept="audio/*" multiple>
     </div>
@@ -110,14 +129,36 @@
     const audioPlayer = document.getElementById('audio-player');
     
     let playlist = [];
+    let db;
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedPlaylist = localStorage.getItem('harmony_playlist');
-        if (savedPlaylist) {
-            playlist = JSON.parse(savedPlaylist);
-            renderPlaylist();
+    const request = indexedDB.open("HarmonyMusicDB", 1);
+
+    request.onupgradeneeded = function(e) {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("tracks")) {
+            db.createObjectStore("tracks", { keyPath: "id", autoIncrement: true });
         }
-    });
+    };
+
+    request.onsuccess = function(e) {
+        db = e.target.result;
+        loadPlaylistFromDB();
+    };
+
+    request.onerror = function() {
+        console.error("Ошибка открытия базы данных");
+    };
+
+    function loadPlaylistFromDB() {
+        const transaction = db.transaction(["tracks"], "readonly");
+        const store = transaction.objectStore("tracks");
+        const getAllRequest = store.getAll();
+
+        getAllRequest.onsuccess = function() {
+            playlist = getAllRequest.result;
+            renderPlaylist();
+        };
+    }
 
     fileInput.addEventListener('change', (e) => {
         const files = Array.from(e.target.files);
@@ -131,13 +172,20 @@
                     data: event.target.result
                 };
                 
-                playlist.push(track);
-                savePlaylist();
-                renderPlaylist();
+                const transaction = db.transaction(["tracks"], "readwrite");
+                const store = transaction.objectStore("tracks");
+                const addRequest = store.add(track);
+
+                addRequest.onsuccess = function(e) {
+                    track.id = e.target.result;
+                    playlist.push(track);
+                    renderPlaylist();
+                };
             };
             
             reader.readAsDataURL(file);
         });
+        fileInput.value = "";
     });
 
     function renderPlaylist() {
@@ -146,9 +194,22 @@
         playlist.forEach((track, index) => {
             const li = document.createElement('li');
             li.className = 'track-item';
-            li.textContent = track.name;
             
-            li.addEventListener('click', () => playTrack(index));
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'track-name';
+            nameSpan.textContent = track.name;
+            nameSpan.addEventListener('click', () => playTrack(index));
+            
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '✕';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteTrack(track.id, index);
+            });
+
+            li.appendChild(nameSpan);
+            li.appendChild(deleteBtn);
             trackListElement.appendChild(li);
         });
     }
@@ -169,12 +230,21 @@
         };
     }
 
-    function savePlaylist() {
-        try {
-            localStorage.setItem('harmony_playlist', JSON.stringify(playlist));
-        } catch (e) {
-            alert('Плейлист переполнен. Браузер не может сохранить слишком много тяжелых аудиофайлов.');
-        }
+    function deleteTrack(id, index) {
+        const transaction = db.transaction(["tracks"], "readwrite");
+        const store = transaction.objectStore("tracks");
+        const deleteRequest = store.delete(id);
+
+        deleteRequest.onsuccess = function() {
+            const items = document.querySelectorAll('.track-item');
+            if (items[index] && items[index].classList.contains('active')) {
+                audioPlayer.pause();
+                audioPlayer.src = "";
+            }
+            
+            playlist.splice(index, 1);
+            renderPlaylist();
+        };
     }
 </script>
 
